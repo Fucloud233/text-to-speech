@@ -8,7 +8,7 @@ from datetime import datetime
 
 
 def get_log_file_time() -> str:
-    log_file_fmt = "%Y-%m-%d %H-%m-%S"
+    log_file_fmt = "%Y-%m-%d %H-%M-%S"
     return __get_cur_time(log_file_fmt)
 
 
