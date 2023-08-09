@@ -32,6 +32,10 @@ class TTSConfig(Config):
     def region(self):
         return self._config_info["region"]
 
+    @property
+    def voice(self):
+        return self._config_info["voice"]
+
 
 if __name__ == "__main__":
     Log.init()
