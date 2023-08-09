@@ -4,70 +4,68 @@
 # @FIle : config.py
 # @Software : PyCharm
 
+from abc import abstractmethod
 import json
 from json.decoder import JSONDecodeError
 from utils.log import Log
 
 
-def gen_config_file():
-    config_info = {
-        "key": "",
-        "region": ""
-    }
-    with open(Config.config_file_path, 'w', encoding="utf-8") as f:
-        config_info_json = json.dumps(config_info, indent=4, separators=(',', ':'))
-        f.write(config_info_json)
-
-
 class Config:
-    config_file_path = "config.json"
+    __config_file_path = "config.json"
 
-    def __init__(self):
-        self.__config_key = None
-        self.__config_region = None
-        # 用于记录配置信息是否有效
+    def __init__(self, auto_load: bool = True):
+        self._config_info = None
         self.__is_valid = False
-        self.load_key()
+        # 设置是否自动加载
+        if auto_load:
+            self.load_key()
 
+    # 用于记录配置信息是否有效
     def load_key(self):
         self.__is_valid = False
 
-        config_info_str = "{}"
-
         # 读取配置文件
+        config_info_str = ""
         try:
-            with open(Config.config_file_path, 'r', encoding="utf-8") as f:
+            with open(Config.__config_file_path, 'r', encoding="utf-8") as f:
                 for line in f.readlines():
                     config_info_str += line.strip()
+
+            # 读取配置文件中的信息
+            self._config_info = json.loads(config_info_str)
         except FileNotFoundError:
-            # 文件不存在则生成文件
-            gen_config_file()
-            # print('[error] "config.json"文件不存在')
+            # 文件不存在 则直接生成基础的配置信息
+            self.gen_config_file()
+        except JSONDecodeError:
+            Log.error('json解析失败')
+            exit(1)
 
-        # 读取配置文件中的信息
-        try:
-            config_info = json.loads(config_info_str)
-            self.__config_key = config_info["key"]
-            self.__config_region = config_info["region"]
-        except (JSONDecodeError, KeyError):
-            Log.error('缺少"key"或者"region"配置信息')
-            # print('[error] 缺少"key"或者"region"配置信息')
         # 验证读取非空
-        if self.__config_key and self.__config_region is not None:
-            self.__is_valid = True
+        if not self._check_config_info():
+            Log.error('缺少关键配置信息')
+            exit(1)
 
-    def get_key(self):
-        return self.__config_key
+        self.__is_valid = True
 
-    def get_region(self):
-        return self.__config_region
+    def gen_config_file(self):
+        self._config_info = self._init_config_info()
+        with open(Config.__config_file_path, 'w', encoding="utf-8") as f:
+            config_info_json = json.dumps(self._config_info, indent=4, separators=(',', ':'))
+            f.write(config_info_json)
 
+    @abstractmethod
+    def _check_config_info(self):
+        pass
+
+    # 用于初始化配置信息 (抽象函数)
+    @abstractmethod
+    def _init_config_info(self) -> dict:
+        pass
+
+    @property
+    def config_info(self):
+        return self._config_info
+
+    @property
     def is_valid(self):
         return self.__is_valid
-
-
-if __name__ == "__main__":
-    Log.init()
-    config = Config()
-    Log.debug("key: {}, region: {}".format(config.get_key(), config.get_region()))
-    Log.debug("is_valid: ", config.is_valid())
