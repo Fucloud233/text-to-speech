@@ -13,6 +13,7 @@ class LogType(Enum):
     info = 'info'
     warn = 'warn'
     error = 'error'
+    debug = 'debug'
 
     def __str__(self):
         return self.name
@@ -42,8 +43,6 @@ class Log:
             log_file_name = Path(time.get_log_file_time() + ".log")
             log_file_name = Path.joinpath(Log.__output_path, log_file_name)
             Log.__log_file = open(log_file_name, "w", encoding="utf-8")
-
-            raise FileNotFoundError
         except Exception:
             Log.__log(LogType.error, "Log文件创建失败")
 
@@ -89,6 +88,10 @@ class Log:
     @staticmethod
     def error(*args):
         Log.__log(LogType.error, *args)
+
+    @staticmethod
+    def debug(*args):
+        Log.__log(LogType.debug, *args)
 
 
 if __name__ == "__main__":
