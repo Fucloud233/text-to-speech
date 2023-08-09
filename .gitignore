@@ -1,6 +1,7 @@
 # 项目文件
 .idea
-# 日志文件
+# 输出目录
+ouput/
 log/
 # 配置文件
 config.json

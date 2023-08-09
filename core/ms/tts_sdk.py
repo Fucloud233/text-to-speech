@@ -103,7 +103,7 @@ class Speech:
                 self.__history_data.append((voice_name, style, text, file_url))
                 return file_url
             else:
-                Log.error("语音转失败！\n ", str(result.reason))
+                Log.error("语音转换失败！\n", str(result.reason))
                 return None
         else:
             try:
@@ -111,7 +111,7 @@ class Speech:
                 asyncio.new_event_loop().run_until_complete(self.get_edge_tts(text, voice_name, file_url))
                 self.__history_data.append((voice_name, style, text, file_url))
             except Exception as e:
-                Log.error("语音转失败！\n ", repr(e))
+                Log.error("语音转换失败！\n", repr(e))
                 file_url = None
             return file_url
 
