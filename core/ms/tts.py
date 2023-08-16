@@ -4,16 +4,12 @@
 # @FIle : tts.py
 # @Software : PyCharm
 
-import math
-import time
+from datetime import datetime
 from pathlib import Path
 
 from core.ms.tts_sdk import Speech
 from utils.log import Log
-
-
-def get_need_time(begin_time: time):
-    return math.floor((time.time() - begin_time) * 1000)
+from utils import time
 
 
 class TTS:
@@ -26,14 +22,10 @@ class TTS:
         self.speech = Speech()
         self.speech.connect()
 
-        self.output_path = Path.joinpath(Path(output_file_path), name)
+        self.name = name
+        self.output_path = Path(output_file_path)
         if not self.output_path.exists():
-            # 设置参parents为True 同时创建多个文件夹
-            self.output_path.mkdir(parents=True)
-        # else:
-        #     for item in self.output_path.iterdir():
-        #         if item.suffix == ".mp3":
-        #             item.unlink()
+            self.output_path.mkdir()
 
         # name_len 用于个输入message命名(输入文本的前n个)
         self.name_len = max(3, name_len)
@@ -46,34 +38,39 @@ class TTS:
     def read_speak_text(self, read_file_path: str):
         try:
             with open(read_file_path, "r", encoding="utf-8") as f:
-                self.__speak_texts = f.readlines()
+                read_texts = f.readlines()
         except FileNotFoundError:
             Log.error("{} not exists!".format(read_file_path))
-            return
+            exit(-1)
 
-        for i in range(len(self.__speak_texts)):
-            self.__speak_texts[i] = self.__speak_texts[i].strip()
+        for text in read_texts:
+            # 去除空值
+            if text != "":
+                self.__speak_texts.append(text)
 
     # 文本转语音
     def speak(self):
-        begin_time = time.time()
+        begin_time = time.get_cur_time()
+        output_path = self.__gen_output_path(begin_time)
+
         # 转换音频
         for i in range(len(self.__speak_texts)):
             speak_text = self.__speak_texts[i]
-            self.__to_sound(speak_text, i)
+            self.__to_sound(output_path, speak_text, i)
 
         # 显示结果
         Log.info("合成音频完成! 共{}个文本, 耗时: {}s".format(
             len(self.__speak_texts),
-            get_need_time(begin_time)
+            time.get_need_time(begin_time)
         ))
+        Log.info("输出路径: ", output_path.absolute())
 
     # 文本转语言 单元
-    def __to_sound(self, speak_text: str, index: int = -1):
+    def __to_sound(self, output_path: Path, speak_text: str, index: int = -1):
         file_name = self.__get_file_name(speak_text, index)
-        file_url = self.speech.to_sample(speak_text,
-                                         output_path=self.output_path,
-                                         file_name=file_name)
+        _ = self.speech.to_sample(speak_text,
+                                  output_path=output_path,
+                                  file_name=file_name)
         # print("[info] 合成完毕: ", file_url)
 
     # 设置文件名
@@ -89,4 +86,20 @@ class TTS:
         if index == -1:
             return file_name
         else:
-            return f"{index} {file_name}"
+            return f"[{index + 1}] {file_name}"
+
+    # 设置输出路径
+    def __gen_output_path(self, begin_time: datetime) -> Path:
+        sub_output_path = str(int(begin_time.timestamp()))
+        output_path = Path.joinpath(self.output_path, self.name, sub_output_path)
+
+        # 如果添加时间戳后缀仍重复 则删除重新创建
+        if output_path.exists():
+            for f in output_path.iterdir():
+                f.unlink()
+        else:
+            # 设置参parents为True 同时创建多个文件夹
+            output_path.mkdir(parents=True)
+
+        return output_path
+
