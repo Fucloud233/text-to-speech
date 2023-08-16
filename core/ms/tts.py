@@ -10,6 +10,7 @@ from pathlib import Path
 from core.ms.tts_sdk import Speech
 from utils.log import Log
 from utils import time
+from utils.system import exit_program
 
 
 class TTS:
@@ -41,7 +42,7 @@ class TTS:
                 read_texts = f.readlines()
         except FileNotFoundError:
             Log.error("{} not exists!".format(read_file_path))
-            exit(-1)
+            exit_program(-1)
 
         for text in read_texts:
             # 去除空值

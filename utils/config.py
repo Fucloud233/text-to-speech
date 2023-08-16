@@ -8,6 +8,7 @@ from abc import abstractmethod
 import json
 from json.decoder import JSONDecodeError
 from utils.log import Log
+from utils.system import exit_program
 
 
 class Config:
@@ -38,12 +39,12 @@ class Config:
             self.gen_config_file()
         except JSONDecodeError:
             Log.error('json解析失败')
-            exit(1)
+            exit_program(-1)
 
         # 验证读取非空
         if not self._check_config_info():
             Log.error('缺少关键配置信息')
-            exit(1)
+            exit_program(-1)
 
         self.__is_valid = True
 

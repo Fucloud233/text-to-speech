@@ -3,6 +3,7 @@
 # @Autor : Fucloud
 # @FIle : tts.py
 # @Software : PyCharm
+import os
 
 from core.ms.tts import TTS
 from utils import arg_parser
@@ -14,3 +15,6 @@ if __name__ == '__main__':
     tts = TTS(args.name)
     tts.read_speak_text(args.input)
     tts.speak()
+
+    os.system("pause")
+

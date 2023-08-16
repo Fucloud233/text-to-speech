@@ -1,11 +1,11 @@
 import time
 # 通信地址
 import azure.cognitiveservices.speech as speechsdk
-import asyncio
 
-import edge_tts
+# import asyncio
+# import edge_tts
+
 from pathlib import Path
-
 from core.ms import tts_voice
 from core.ms.tts_voice import EnumVoice
 from utils.tts_config import TTSConfig as Config
@@ -50,9 +50,9 @@ class Speech:
             self.__connection.close()
 
     # 生成mp3音频
-    async def get_edge_tts(self,text,voice,file_url) -> None:
-        communicate = edge_tts.Communicate(text, voice)
-        await communicate.save(file_url)
+    # async def get_edge_tts(self,text,voice,file_url) -> None:
+    #     communicate = edge_tts.Communicate(text, voice)
+    #     await communicate.save(file_url)
 
     """
     文字转语音
@@ -105,15 +105,15 @@ class Speech:
             else:
                 Log.error("语音转换失败！\n", str(result.reason))
                 return None
-        else:
-            try:
-                file_url = get_file_url()
-                asyncio.new_event_loop().run_until_complete(self.get_edge_tts(text, voice_name, file_url))
-                self.__history_data.append((voice_name, style, text, file_url))
-            except Exception as e:
-                Log.error("语音转换失败！\n", repr(e))
-                file_url = None
-            return file_url
+        # else:
+        #     try:
+        #         file_url = get_file_url()
+        #         asyncio.new_event_loop().run_until_complete(self.get_edge_tts(text, voice_name, file_url))
+        #         self.__history_data.append((voice_name, style, text, file_url))
+        #     except Exception as e:
+        #         Log.error("语音转换失败！\n", repr(e))
+        #         file_url = None
+        #     return file_url
 
 
 if __name__ == '__main__':
