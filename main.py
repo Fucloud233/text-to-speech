@@ -5,11 +5,12 @@
 # @Software : PyCharm
 
 from core.ms.tts import TTS
+from utils import arg_parser
 
 if __name__ == '__main__':
-    input_file_url = "input.txt"
+    args = arg_parser.get_args()
 
     # 输出结果
-    tts = TTS("light")
-    tts.read_speak_text(input_file_url)
+    tts = TTS(args.name)
+    tts.read_speak_text(args.input)
     tts.speak()
