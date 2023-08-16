@@ -1,7 +1,9 @@
 # 项目文件
 .idea
 # 输出目录
-ouput/
+output/
 log/
+build/
+dist/
 # 配置文件
 config.json
