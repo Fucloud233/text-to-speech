@@ -21,5 +21,15 @@ def __get_cur_time(fmt: str) -> str:
     return datetime.now().strftime(fmt)
 
 
+# 得到当前时间
+def get_cur_time() -> datetime:
+    return datetime.now()
+
+
+# 得到所需要所花费的时间
+def get_need_time(begin_time: datetime) -> int:
+    return (datetime.now() - begin_time).seconds
+
+
 if __name__ == "__main__":
     print("cur_time: ", get_log_file_time())
