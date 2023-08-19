@@ -30,7 +30,8 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='main',
+    # 输出exe的文件名
+    name='tts',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
