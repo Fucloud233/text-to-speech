@@ -12,7 +12,7 @@ if __name__ == '__main__':
     args = arg_parser.get_args()
 
     # 输出结果
-    tts = TTS(args.name)
+    tts = TTS()
     tts.read_speak_text(args.input)
     tts.speak()
 
