@@ -72,8 +72,8 @@ class TTS:
 
         self.input_path = Path(read_file_path)
 
-    # 文本转语音
-    def speak(self):
+    # 文本转语音 (返回输出路径)
+    def speak(self) -> Path:
         begin_time = time.get_cur_time()
         output_path = self.__gen_output_path(begin_time)
 
@@ -91,6 +91,8 @@ class TTS:
             time.get_need_time(begin_time)
         ))
         Log.info("输出路径: ", output_path.absolute())
+
+        return output_path
 
     # 文本转语言 单元
     def __to_sound(self, output_path: Path, speak_text: str, index: int = -1):

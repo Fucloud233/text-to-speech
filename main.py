@@ -14,7 +14,9 @@ if __name__ == '__main__':
     # 输出结果
     tts = TTS()
     tts.read_speak_text(args.input)
-    tts.speak()
+    output_path = tts.speak()
 
+    # 自动打开资源管理器
+    os.system(f"explorer {output_path}")
     os.system("pause")
 
