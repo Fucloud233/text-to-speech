@@ -17,6 +17,8 @@ if __name__ == '__main__':
     output_path = tts.speak()
 
     # 自动打开资源管理器
-    os.system(f"explorer {output_path}")
-    os.system("pause")
+    if os.name == 'nt':
+        os.system(f"explorer {output_path}")
+        os.system("pause")
+
 
